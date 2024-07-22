@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Result</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+        
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <!-- <link rel="stylesheet" href="../modstyle.css"> -->
+    <link rel="stylesheet" href="result.css">
+        
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="../worker.js"></script>
+ 
+    
+</head>
+<body class="result3Body">
+    <div class="main">  
+        
+ <!-- FOR Sound👇 and Back -->
+ <div class="buttonsoundalign" >
+        
+    
+    <button id="volumeup" class="soundright" onclick="backSound()" style="display: block;">  <i class="fas fa-volume-xmark"></i></button>
+    <button id="volumedown" class="soundright" onclick="backSound2()" style="display: none;">  <i class="fas fa-volume-up"></i></button>
+    
+</div>
+<!-- FOR Sound☝and Back  -->
+
+        
+<div class="resultDiv" style="width: 100%; position: relative; height: 100vh;">
+    <div id="scoreboard" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <h1 style="text-align: center; margin-bottom: 1rem;">Final Score</h1>
+        <table id="scoreTable">
+            <thead >
+              
+            </thead>
+            <tbody id="scoreTableBody">
+                <!-- Rows will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+       
+
+
+     
+        <div class="forNextBtn"onclick="changeScreen()" >
+            <button class="menu-btn"  >
+
+            </button>
+        <!-- <div id="show_result">
+            <button id="options-btn" class="bounce"  onclick="ShowResult()">See Results</button>
+        </div> -->
+
+        <!-- <div class="forNextBtn" style="width: 100%; height: auto; position: relative; text-align: center;">
+            <a href="./main.html">
+                <img src="./images/Option Board.png" style="display: block;" alt="">
+                <div class="text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    <p>NEXT</p>
+                </div>
+            </a>
+        </div> -->
+
+        <!-- <div class="forBtn">
+            <button id="showListButton" class="btnBackground " onclick="changeScreen()" >Main Menu</button>
+        </div> -->
+   
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const scoreTableBody = document.getElementById('scoreTableBody');
+    
+                // Check if localStorage is supported by the browser
+                if (typeof(Storage) !== "undefined") {
+                    // Retrieve all keys from localStorage
+                    const keys = Object.keys(localStorage);
+    
+                    // Initialize objects to store scores by table number for Game1, Game2, and Game3
+                    const scoresGame1 = {};
+                    const scoresGame2 = {};
+                    const scoresGame3 = {};
+    
+                    // Iterate over each key and process items that start with "Game1", "Game2", or "Game3"
+                    keys.forEach(key => {
+                        if (key.startsWith("Game1")) {
+                            // Extract table number and score from the item
+                            const [ , , tableNumber ] = key.split(' ');
+                            const score = parseInt(localStorage.getItem(key));
+                            
+                            // Add the score to the corresponding table number in scoresGame1
+                            if (scoresGame1[tableNumber]) {
+                                scoresGame1[tableNumber] += score;
+                            } else {
+                                scoresGame1[tableNumber] = score;
+                            }
+                        } else if (key.startsWith("Game2")) {
+                            // Extract table number and score from the item
+                            const [ , , tableNumber ] = key.split(' ');
+                            const score = parseInt(localStorage.getItem(key));
+                            
+                            // Add the score to the corresponding table number in scoresGame2
+                            if (scoresGame2[tableNumber]) {
+                                scoresGame2[tableNumber] += score;
+                            } else {
+                                scoresGame2[tableNumber] = score;
+                            }
+                        } else if (key.startsWith("Game3")) {
+                            // Extract table number and score from the item
+                            const [ , , tableNumber ] = key.split(' ');
+                            const score = parseInt(localStorage.getItem(key));
+                            
+                            // Add the score to the corresponding table number in scoresGame3
+                            if (scoresGame3[tableNumber]) {
+                                scoresGame3[tableNumber] += score;
+                            } else {
+                                scoresGame3[tableNumber] = score;
+                            }
+                        }
+                    });
+    
+                    // Initialize an array to store the total scores by table number
+                    const totalScores = [];
+    
+                    // Sum scores from Game1, Game2, and Game3 for each table number
+                    const allTableNumbers = new Set([...Object.keys(scoresGame1), ...Object.keys(scoresGame2), ...Object.keys(scoresGame3)]);
+                    allTableNumbers.forEach(tableNumber => {
+                        const totalScore = (scoresGame1[tableNumber] || 0) + (scoresGame2[tableNumber] || 0) + (scoresGame3[tableNumber] || 0);
+                        totalScores.push({ tableNumber: parseInt(tableNumber), totalScore: totalScore });
+                    });
+    
+                    // Sort the total scores in descending order by table number and total score
+                    totalScores.sort((a, b) => b.totalScore - a.totalScore || b.tableNumber - a.tableNumber);
+    
+                    // Construct table rows based on sorted scores
+                    totalScores.slice(0, 5).forEach((item, index) => {
+                        let row = document.createElement('tr');
+    
+                        // Create table data cells for table number and total score
+                        let tableNumberCell = document.createElement('td');
+                        tableNumberCell.textContent = `Table ${item.tableNumber}`;
+    
+                        let totalScoreCell = document.createElement('td');
+                        totalScoreCell.textContent = item.totalScore;
+    
+                        // Set background color for the total score cell
+                        totalScoreCell.style.backgroundImage = "linear-gradient(#96680C, rgb(199 178 57) )";
+                        totalScoreCell.style.color = "#fff"; 
+                        
+    
+                        // Append cells to the row
+                        row.appendChild(tableNumberCell);
+                        row.appendChild(totalScoreCell);
+    
+                        // Append the row to the tbody
+                        scoreTableBody.appendChild(row);
+                    });
+                    } else {
+                        console.log("Sorry, your browser does not support Web Storage...");
+                    }
+                });
+    
+    
+            function changeScreen() {
+    
+                window.location.href="main.html";
+            }
+    
+            var backgroundAudio = new Audio('./sound/Background-Music.mp3');
+      
+        
+      // backgroundAudio.play();
+      backgroundAudio.loop = true; // Loop the audio
+      
+      var volumeup = document.getElementById('volumeup'); // Corrected ID
+      var volumedown = document.getElementById('volumedown'); // Corrected ID
+      volumedown.style.display = "none";
+      
+      function backSound() {
+          console.log("sound play");
+          backgroundAudio.play();
+          volumeup.style.display = 'none'; // Change the display to none when audio is playing
+          volumedown.style.display = 'block'; // Change the display to block when audio is playing
+      }
+      
+      function backSound2() {
+          console.log("sound pause");
+          backgroundAudio.pause();
+          volumeup.style.display = 'block'; // Change the display to block when audio is paused
+          volumedown.style.display = 'none'; // Change the display to none when audio is paused
+      }
+      function back(){
+                window.location.href = "./Game3/result3.html"
+            }
+            </script>
+
+  <script>
+    var duration =40 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 20, spread: 360, ticks: 160, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function() {
+      var timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      var particleCount = 50 * (timeLeft / duration);
+      // since particles fall down, start a bit higher than random
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+  </script>
+</body>
+</html>

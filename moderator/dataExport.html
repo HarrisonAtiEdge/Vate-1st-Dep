@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Export to Excel and Save to Firebase</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <button onclick="exportData()">Export to Excel</button>
+  <button onclick="saveDataToFirebase()">Save to Firebase</button>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBsF20FwAzhR1mzDTxaPuYjJi54RX0vicU",
+      authDomain: "vate-odyssey.firebaseapp.com",
+      projectId: "vate-odyssey",
+      storageBucket: "vate-odyssey.appspot.com",
+      messagingSenderId: "450682370240",
+      appId: "1:450682370240:web:9102bbed271c02e7bf9525"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Function to save data to Firebase
+    window.saveDataToFirebase = function () {
+      const data = JSON.parse(localStorage.getItem('gameRecords'));
+      if (!data) {
+        console.error('No data found in local storage');
+        return;
+      }
+
+      console.log('Saving data to Firebase:', data); // Debugging log
+      const vateGame1Ref = ref(database, 'vateGame1');
+      set(vateGame1Ref, data)
+        .then(() => {
+          console.log('Data saved successfully!');
+        })
+        .catch((error) => {
+          console.error('Error saving data:', error);
+        });
+
+      //2nd Game data upload
+      const data2 = JSON.parse(localStorage.getItem('game2Records'));
+      if (!data2) {
+        console.error('No data2 found in local storage');
+        return;
+      }
+
+      console.log('Saving data2 to Firebase:', data2); // Debugging log
+      const vateGame2Ref = ref(database, 'vateGame2');
+      set(vateGame2Ref, data2)
+        .then(() => {
+          console.log('Data2 saved successfully!');
+        })
+        .catch((error) => {
+          console.error('Error saving data2:', error);
+        });
+
+      //3rd Game data upload
+      const data3 = JSON.parse(localStorage.getItem('game3Records'));
+      if (!data3) {
+        console.error('No data3 found in local storage');
+        return;
+      }
+
+      console.log('Saving data3 to Firebase:', data3); // Debugging log
+      const vateGame3Ref = ref(database, 'vateGame3');
+      set(vateGame3Ref, data3)
+        .then(() => {
+          console.log('Data3 saved successfully!');
+        })
+        .catch((error) => {
+          console.error('Error saving data3:', error);
+        });
+    };
+
+    // Function to export data to Excel
+    window.exportData = async function () {
+      try {
+        // Fetch data from Firebase
+        const dbRef = ref(database);
+        const game1Snapshot = await get(child(dbRef, 'vateGame1'));
+        const game2Snapshot = await get(child(dbRef, 'vateGame2'));
+        const game3Snapshot = await get(child(dbRef, 'vateGame3'));
+
+        const game1Data = game1Snapshot.exists() ? game1Snapshot.val() : [];
+        const game2Data = game2Snapshot.exists() ? game2Snapshot.val() : [];
+        const game3Data = game3Snapshot.exists() ? game3Snapshot.val() : [];
+
+        // Prepare data for Excel
+        const worksheetData1 = game1Data.map(item => ({
+          'Table Number': item.tableNumber,
+          'Question': item.question,
+          'Given Answer': item.givenAnswer,
+          'Result': item.result
+        }));
+
+        const worksheetData2 = game2Data.map(item => ({
+          'Table Number': item.tableNumber,
+          'Question': item.question,
+          'Given Answer': item.givenAnswer,
+          'Result': item.result
+        }));
+
+        const worksheetData3 = game3Data.map(item => ({
+          'Table Number': item.tableNumber,
+          'Question': item.question,
+          'Given Answer': item.givenAnswer,
+          'Result': item.result
+        }));
+
+        // Create a new workbook and worksheets
+        const workbook = XLSX.utils.book_new();
+        const worksheet1 = XLSX.utils.json_to_sheet(worksheetData1);
+        const worksheet2 = XLSX.utils.json_to_sheet(worksheetData2);
+        const worksheet3 = XLSX.utils.json_to_sheet(worksheetData3);
+
+        // Append sheets to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet1, 'Game 1 Results');
+        XLSX.utils.book_append_sheet(workbook, worksheet2, 'Game 2 Results');
+        XLSX.utils.book_append_sheet(workbook, worksheet3, 'Game 3 Results');
+
+        // Write workbook to file
+        XLSX.writeFile(workbook, 'results.xlsx');
+      } catch (error) {
+        console.error('Error exporting data:', error);
+      }
+    };
+  </script>
+</body>
+
+</html>
