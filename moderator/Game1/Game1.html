@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../modstyle.css">
+  <link rel="stylesheet" href="../timer.css">
+  <link rel="stylesheet" href="../menu.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <title>Game 1</title>
+  <script src="../worker.js"></script>
+  <style>
+    .football_anim {
+      transition: transform 3s ease;
+    }
+
+    .blink {
+      animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+
+
+  </style>
+
+</head>
+
+<body class="firstgame" style="overflow: hidden;">
+  <audio id="clickSound" src="../sound/click.mp3"></audio>
+  <!-- <div class="banner">
+    <img src="../images/game1banner.png">
+
+  </div> -->
+
+
+  <!-- FOR Sound☝and Back  -->
+
+
+  <div class="maincontainer" style="justify-content: center;">
+
+
+    <div class="timerdiv">
+      <div id="left" class="userList" style=" width: 100%; height: auto; position: relative; text-align: center;">
+        <!-- <img class="timerpic" src="../images/timer_container.png"> -->
+
+        <div style="position: absolute; top: 39%; left: 52%; transform: translate(-50%, -50%);">
+
+        
+          <div class="clock-wrap">
+            <div class="clock pro-0">
+              <span class="count">15</span>
+            </div>
+          </div>
+          <div class="action">
+            <div class="input">
+              <input data-action="start" class="input-btn" type="button" value="Start">
+              <!-- <input data-action="pause" class="input-btn" type="button" value="Pause" style="display:none;"> -->
+              <input data-action="reset" class="input-btn" type="button" value="Reset" style="display:none;">
+            </div>
+          </div>
+          <!-- <div class="controllers" style="margin-top: 0px; ">
+            <button class="pause-timer btnBackground1">Pause</button>
+            <button class="play-timer btnBackground1">Play&nbsp;&nbsp;&nbsp;</button>
+            <button class="reset-timer btnBackground1">Reset</button>
+          </div> -->
+
+
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+
+
+    <div class="questionConatiner" style="width: 77%;">
+      <div style="text-align: center; position: relative; width: 100%;">
+        <img style="  width: 100%;  height: 70vh;" class="questionbackimage" src="../images/Back.webp" alt="" srcset="">
+
+
+
+        <div id="right" style="width: 47vw;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-76%, -55%);">
+
+          <div style="    display: inline-flex;
+                          align-items: center;
+                          justify-content: center;">
+            <div >
+              <div id="question" class="questionshape">
+                <!-- <h3 style="margin-bottom: 0rem !important;">Question:</h3> -->
+                <h3 class="questionText" id="questionText"></h3>
+              </div>
+
+
+              <div id="options">
+                <button class="newOption1 ">Options 1</button>
+                <button class="newOption1">Options 2</button>
+                <button class="newOption1">Options 3</button>
+                <button class="newOption1">Options 4</button>
+              </div>
+            </div>
+
+
+          </div>
+        
+
+          <button id="result-btn" class="btnBackground">See Result</button>
+
+        </div>
+
+        <div id="right" style="    width: 50%;
+                                  position: absolute;
+                                  top: 50%;
+                                  left: 50%;
+                                  transform: translate(10%, -50%);">
+          <div class="tablebuzzer" style="width: 45%;">
+
+            <!-- <img style="display: block;" class="buzzerpic" src="../images/newBuzzerBoard.png"> -->
+            <div class="buzzerpic" style="background-color: transparent; height: 30vh;  ">
+
+              <ul id="list" class="userListContent">
+              </ul>
+
+            </div>
+
+            <div class="forBtn">
+              <button id="showListButton" class="btnBackground ">Start Buzzer</button>
+            </div>
+
+
+          </div>
+        </div>
+
+
+
+
+     
+
+
+      <div class="next-backbuttonalign">
+        <button class="btnBackground backalign" onclick="resetScore();">Reset Score</button>
+
+        <button class="btnBackground nextalign" id="nextQuestion">Next Question</button>
+      </div>
+
+    </div>
+
+
+    <!-- FOR Sound👇 and Back -->
+    <div class="buttonsoundalign">
+
+      <!-- <button  class="soundleft">back</button> -->
+
+      <button id="volumeup" class="soundright" onclick="backSound()" style="display: block;"> <i
+          class="fas fa-volume-up"></i></button>
+      <button id="volumedown" class="soundright" onclick="backSound2()" style="display: block;"> <i
+          class="fas fa-volume-xmark"></i></button>
+
+    </div>
+
+    <!-- <div style="display: flex; justify-content: center; position: absolute; bottom: 5%;">
+      <img src="../images/Brands.webp" style="width: 80%;" alt="">
+    </div> -->
+
+    <!-- For 👇 GIFs  For GIFs  For GIFs  For GIFs  For GIFs  For GIFs -->
+
+    <div id="popupContainer" style="display: none;">
+      <!-- <div id="popupContainer" style="display: block;"> -->
+      <div id="gifPopup">
+
+        <img id="gifImage" src="../images/wrong-size-change.gif" alt="GIF Image">
+      </div>
+    </div>
+
+    <div id="popupContainer2" style="display: none;">
+      <!-- <div id="popupContainer2" style="display: block;"> -->
+      <div id="gifPopup2">
+
+        <img id="gifImage2" src="../images/correct-size-change.gif" alt="GIF Image">
+      </div>
+    </div>
+
+    <div class="mainmenu">
+      <a href="/moderator/main.html">
+        <button class="menu"></button>
+      </a>
+    </div>
+
+    <div class="forwardalign">
+      <button id="nextpagebtn" class="forwardbtn"></button>
+      <button onclick="back()" class="backwardbtn"></button>
+    </div>
+
+    <!-- For ☝ GIFs  For GIFs  For GIFs  For GIFs  For GIFs  For GIFs -->
+
+  </div>
+
+
+  <script src="../timer.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+
+    var popupContainer = document.getElementById('popupContainer');
+    var popupContainer2 = document.getElementById('popupContainer2');
+
+    var list = document.getElementById("list");
+    var buttons = document.querySelectorAll("#tables-con button");
+    var limit = 4;
+    var count = 0;
+    var buzzerStarted = false;
+    const socket = io();
+    var changeStaredText = document.getElementById("showListButton")
+
+
+    const wrongAudio = new Audio('../sound/wrong-answer-Buzzer.mp3'); // Load the wrong answer sound file
+    const successAudio = new Audio('../sound/Winning.mp3'); // Load the success sound file
+
+    document.getElementById("showListButton").addEventListener("click", function () {
+      buzzerStarted = true;
+      changeStaredText.innerHTML = 'Buzzer Started!';
+    });
+
+    socket.on('login', (data) => {
+      if (buzzerStarted && count < limit) {
+        var newItem = document.createElement("li");
+        newItem.textContent = `${data.username}`;
+        newItem.style.marginBottom = "20px";
+        newItem.style.color = "white";
+        newItem.style.boxShadow = "0px 1px 2px rgb(243 209 169 / 50%), 0px 2px 4px rgb(243 209 169 / 50%), 0px 4px 8px rgb(243 209 169 / 50%), 0px 8px 16px rgb(243 209 169 / 50%)";
+        newItem.style.backgroundImage = "linear-gradient(#ffb900,#ff7700)"; 
+        list.appendChild(newItem);
+        newItem.addEventListener("click", function () {
+          var otherItems = list.querySelectorAll("li");
+          otherItems.forEach(function (item) {
+            item.classList.remove("selected");
+          });
+          newItem.classList.add("selected");
+        });
+        count++;
+      }
+    });
+
+  
+
+
+
+    // Function to show the popup container and hide it after 3 seconds
+    function showPopup() {
+      popupContainer.style.display = "block";
+      setTimeout(function () {
+        popupContainer.style.display = "none";
+      }, 2000); // 3000 milliseconds = 3 seconds
+    }
+
+    function showPopup2() {
+      popupContainer2.style.display = "block";
+      setTimeout(function () {
+        popupContainer2.style.display = "none";
+      }, 2000); // 3000 milliseconds = 3 seconds
+    }
+
+
+
+    // Question format:
+    var questions = [
+  {
+    question: "Q1. A localized flat discoloration or textural change in the skin.",
+    options: ["A . Ecchymosis", "B . Macule", "C . Papule", "D . Pustule"],
+    answer: "B . Macule"
+  },
+  {
+    question: "Q2. A small solid elevation of the skin, generally defined as less than 5mm.",
+    options: ["A . Pustule", "B . Ecchymosis", "C . Papule", "D . Macule"],
+    answer: "C . Papule"
+  },
+  {
+    question: "Q3. Following are the types of Eczema Except:",
+    options: ["A . Atopic Eczema", "B . Seborrhoeic Dermatitis", "C . Discoid Eczema", "D . Arthritis Dermatitis"],
+    answer: "D . Arthritis Dermatitis"
+  },
+  {
+    question: "Q4. Intense ________ and skin reactivity are the hallmarks of Atopic Eczema.",
+    options: ["A . Infection", "B . Lichenification", "C . Pruritus", "D . Rash"],
+    answer: "C . Pruritus"
+  },
+  {
+    question: "Q5. Dermatitis caused by a delayed hypersensitivity reaction is:",
+    options: ["A . Irritant Contact Dermatitis", "B . Allergic Contact Dermatitis"],
+    answer: "B . Allergic Contact Dermatitis"
+  },
+  {
+    question: "Q6. A circumscribed collection of leukocytes and fluid that vary in size.",
+    options: ["A . Ecchymosis", "B . Pustule", "C . Pustule", "D . Macule"],
+    answer: "B . Pustule"
+  },
+  {
+    question: "Q7. Dermatitis caused by a delayed hypersensitivity reaction is;",
+    options: ["A . Allergic Contact Dermatitis", "B . Irritant Contact Dermatitis"],
+    answer: "A . Allergic Contact Dermatitis"
+  },
+  {
+    question: "Q8. Plaque Psoriasis, also known as;",
+    options: ["A . Psoriasis vulgaris", "B . Acne vulgaris", "C . Psoriasis Rosacea", "D . Guttate Psoriasis"],
+    answer: "A . Psoriasis vulgaris"
+  },
+  {
+    question: "Q9. Which of the following Dermatitis manifests by coin or disc-shaped lesions?",
+    options: ["A . Contact Dermatitis", "B . Psoriasis", "C . Lichen simplex chronicus", "D . Discoid Dermatitis"],
+    answer: "D . Discoid Dermatitis"
+  },
+  {
+    question: "Q10. The important feature of Psoriasis is:",
+    options: ["A . Eczema", "B . Scaling", "C . Crusting", "D . Blistering"],
+    answer: "B . Scaling"
+  },
+  {
+    question: "Q11. Which type of Psoriasis often appears in childhood or young adulthood?",
+    options: ["A . Pustular Psoriasis", "B . Guttate Psoriasis", "C . Inverse Psoriasis", "D . Erythrodermic Psoriasis"],
+    answer: "B . Guttate Psoriasis"
+  },
+  {
+    question: "Q12. Which type of Psoriasis can be more troublesome in overweight people?",
+    options: ["A . Pustular Psoriasis", "B . Plaque Psoriasis", "C . None of the above", "D . Inverse Psoriasis"],
+    answer: "D . Inverse Psoriasis"
+  }
+];
+
+    var currentQuestionIndex = 0;
+
+    var questionText = document.getElementById("questionText");
+    var optionsDiv = document.getElementById("options");
+
+
+    
+// Initialize the game record array
+var gameRecords = JSON.parse(localStorage.getItem("gameRecords")) || [];
+
+
+    function displayQuestion(questionObj) {
+      questionText.textContent = questionObj.question;
+      optionsDiv.innerHTML = "";
+      questionObj.options.forEach(function (option) {
+        var div = document.createElement("div");
+        div.textContent = option;
+
+        div.classList.add("newOption");
+        div.addEventListener("click", function () {
+       
+          var selectedTable = document.querySelector(".selected");
+          if (selectedTable) {
+            var tableNumber = "Game1 "+selectedTable.textContent;
+
+                 // Determine if the answer is correct
+        var isCorrect = option === questionObj.answer;
+
+          // Create a new record
+          var record = {
+            
+            tableNumber: tableNumber,
+            givenAnswer: option,
+            question: questionObj.question,
+            result: isCorrect ? "correct" : "wrong"
+          };
+
+          // Add the new record to the gameRecords array
+          gameRecords.push(record);
+
+          // Store the updated gameRecords array in localStorage
+          localStorage.setItem("gameRecords", JSON.stringify(gameRecords));
+
+            if (isCorrect) {
+              div.style.color = "white";
+              div.style.backgroundColor = "green";
+              var score = localStorage.getItem(tableNumber) || 0;
+              score = parseInt(score) + 10;
+              localStorage.setItem(tableNumber, score);
+              successAudio.play();
+              clock.pause();
+              $audio.pause();
+              showPopup2();
+            } else {
+              div.style.color = "white";
+              div.style.backgroundColor = "red";
+              highlightCorrectAnswer(questionObj.answer);
+              var score = localStorage.getItem(tableNumber) || 0;
+              score = parseInt(score) + 0;
+              localStorage.setItem(tableNumber, score);
+              wrongAudio.play();
+              clock.pause();
+              $audio.pause();
+              showPopup();
+            }
+          }
+        });
+        optionsDiv.appendChild(div);
+      });
+
+
+    }
+
+
+    function highlightCorrectAnswer(correctAnswer) {
+      var options = optionsDiv.childNodes;
+      options.forEach(function (option) {
+        if (option.textContent === correctAnswer) {
+          option.style.color = "green"; // Highlight the correct answer in green
+
+          // Blink effect
+          option.classList.add('blink');
+          setTimeout(function () {
+            option.classList.remove('blink');
+          }, 15000); // Blink for 10 second
+        }
+      });
+    }
+
+
+    var resultbtn = document.getElementById('result-btn');
+    resultbtn.style.display = "none";
+
+    function nextQuestion() {
+      count = 0;
+      buzzerStarted = false;
+      changeStaredText.innerHTML = 'Start Buzzer';
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        displayQuestion(questions[currentQuestionIndex]);
+      } else {
+        questionText.style.display = "none";
+        optionsDiv.style.display = "none";
+        resultbtn.style.display = "block";
+
+      }
+      list.innerHTML = "";
+      document.getElementById("list").style.display = "none";
+
+    clock.reset();
+
+
+    }
+    displayQuestion(questions[currentQuestionIndex]);
+
+    document.getElementById("nextQuestion").addEventListener("click", nextQuestion);
+
+    var tables = document.querySelectorAll("#list li");
+    tables.forEach(function (table) {
+      table.addEventListener("click", function () {
+        var otherItems = document.querySelectorAll("#list li");
+        otherItems.forEach(function (item) {
+          item.classList.remove("selected");
+        });
+        table.classList.add("selected");
+      });
+    });
+
+    document.getElementById("showListButton").addEventListener("click", function () {
+      let list = document.getElementById("list");
+      list.innerHTML = "";
+      document.getElementById("list").style.display = "block";
+    });
+
+  </script>
+
+  <!-- JavaScript for popup menu -->
+  <script>
+    let popup = document.getElementById('popup')
+
+    function openPopup() {
+      popup.classList.add('open-popup')
+
+    }
+
+    function closePopup() {
+      popup.classList.remove('open-popup')
+    }
+  </script>
+  <script>
+
+
+
+
+   document.getElementById('result-btn').addEventListener('click', function() {
+    // Redirect to result1.html
+    window.location.href = "result1.html";
+    });
+   document.getElementById('nextpagebtn').addEventListener('click', function() {
+    // Redirect to result1.html
+    window.location.href = "result1.html";
+    });
+
+    document.getElementById('backpagebtn').addEventListener('click', function() {
+      // Redirect to result1.html
+      window.location.href = "rule1.html";
+      });
+
+
+    function resetScore() {
+
+      gameRecords = [];
+
+// Remove the gameRecords item from localStorage
+localStorage.removeItem("gameRecords");
+      const keysToRemove = [];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("Game1 Table")) {
+          keysToRemove.push(key);
+        }
+      }
+
+      // Remove the collected keys
+      for (const key of keysToRemove) {
+        localStorage.removeItem(key);
+      }
+    }
+  </script>
+
+  <script src="../../moderator/sound.js"></script>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var audio = document.getElementById('clickSound');
+
+      var startButtons = document.querySelectorAll('.btnBackground');
+      startButtons.forEach(function(startButton) {
+        startButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          audio.play();
+        });
+      });
+
+      document.querySelector('.forwardbtn').addEventListener('click', function(event) {
+        audio.play();
+      });
+
+      document.querySelector('.backwardbtn').addEventListener('click', function(event) {
+        audio.play();
+      });
+
+      document.querySelector('.menu').addEventListener('click', function(event) {
+        audio.play();
+      });
+    });
+    
+    function back() {
+        window.location.href='rule1.html';
+    }
+    </script>
+
+</body>
+
+</html>
